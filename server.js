@@ -15,7 +15,7 @@ const allowedOrigins = [
   "https://bug-tracker-ofdj.vercel.app"         // Production frontend on Vercel
 ];
 
-app.use(cors({
+const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -23,8 +23,13 @@ app.use(cors({
       callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: true
-}));
+  credentials: true,
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // 🛠️ Handle preflight requests
 
 // --- Middleware ---
 app.use(express.json());

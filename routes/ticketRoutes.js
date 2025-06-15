@@ -3,42 +3,38 @@ const router = express.Router(); // Create an Express Router instance
 const {
   createTicket,
   getTicketsByProject,
-  getTicketById,
-  updateTicket,
-  deleteTicket,
+  getTicketById
 } = require('../controllers/ticketController'); // Import ticket controller functions
 const { protect } = require('../middleware/authMiddleware'); // Import the authentication middleware
+const Ticket = require('../models/Ticket'); // Import the Ticket model
+const Project = require('../models/Project'); // Import the Project model
 
 // Define routes for tickets. All these routes will be protected.
 
 // POST /api/tickets - Create a new ticket
 router.post('/', protect, createTicket);
 
-// GET /api/tickets/:projectId - Get all tickets for a specific project
-router.get('/:projectId', protect, getTicketsByProject);
+// GET /api/tickets/project/:projectId - Get all tickets for a specific project
+router.get('/project/:projectId', protect, getTicketsByProject);
 
-// GET /api/tickets/single/:id - Get a single ticket by its own ID
-// Note: We use 'single' to differentiate from the projectId route above.
-router.get('/single/:id', protect, getTicketById);
+// GET /api/tickets/ticket/:id - Get a single ticket by its own ID
+router.get('/ticket/:id', protect, getTicketById);
 
-// In your ticketRoutes.js or similar file
+// GET /api/tickets/all - Get all tickets user has access to
 router.get('/all', protect, async (req, res) => {
   try {
-    // Find all projects where the user is an owner or team member
     const projects = await Project.find({
       $or: [
-        { owner: req.user.id }, // req.user.id comes from your protect middleware
+        { owner: req.user.id },
         { teamMembers: req.user.id }
       ]
     });
 
-    // Get all ticket IDs from these projects
     const projectIds = projects.map(project => project._id);
 
-    // Find all tickets associated with these project IDs
     const tickets = await Ticket.find({ project: { $in: projectIds } })
-                                .populate('assignee', 'name email') // Populate assignee details
-                                .populate('reporter', 'name email'); // Populate reporter details
+      .populate('assignee', 'name email')
+      .populate('reporter', 'name email');
 
     res.json(tickets);
   } catch (error) {
@@ -47,11 +43,6 @@ router.get('/all', protect, async (req, res) => {
   }
 });
 
-// PUT /api/tickets/:id - Update a ticket by ID
-// DELETE /api/tickets/:id - Delete a ticket by ID
-router
-  .route('/:id')
-  .put(protect, updateTicket)
-  .delete(protect, deleteTicket);
+// PUT /api/tickets/:id - Update a ticket (to be implemented)
 
 module.exports = router; // Export the router

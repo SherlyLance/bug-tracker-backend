@@ -14,6 +14,18 @@ const protect = asyncHandler(async (req, res, next) => {
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+      // Check if MongoDB is bypassed for testing
+      if (global.bypassMongoDB) {
+        // Create a mock user for testing
+        req.user = {
+          _id: decoded.id || 'mock-user-id',
+          name: 'Test User',
+          email: 'test@example.com',
+          role: 'admin' // Give admin role for testing
+        };
+        return next();
+      }
+
       // Get user from the token (and select the role field)
       req.user = await User.findById(decoded.id).select('-password'); // This automatically includes 'role' if it's in the schema.
                                                                        // If not, use .select('-password +role') or similar

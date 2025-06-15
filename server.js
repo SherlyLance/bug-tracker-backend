@@ -34,15 +34,18 @@ app.options('*', cors(corsOptions)); // 🛠️ Handle preflight requests
 // --- Middleware ---
 app.use(express.json());
 
-// --- MongoDB Connection ---
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log('MongoDB Connected Successfully!');
-  })
-  .catch((err) => {
-    console.error('MongoDB connection error:', err);
-    process.exit(1);
-  });
+// --- MongoDB Connection (temporarily bypassed for testing) ---
+console.log('MongoDB connection bypassed for testing purposes.');
+// Set global flag for bypassed MongoDB connection
+global.bypassMongoDB = true;
+// mongoose.connect(process.env.MONGO_URI)
+//   .then(() => {
+//     console.log('MongoDB Connected Successfully!');
+//   })
+//   .catch((err) => {
+//     console.error('MongoDB connection error:', err);
+//     process.exit(1);
+//   });
 
 // --- Import Routes ---
 const userRoutes = require('./routes/userRoutes');

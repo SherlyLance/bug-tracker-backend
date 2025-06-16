@@ -13,7 +13,8 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:3000",                      // Local dev
   "https://bug-tracker-ofdj.vercel.app",        // Production frontend on Vercel
-  "https://bug-tracker-ofdj-git-main-sherly-lance-hs-projects.vercel.app" // Git branch deployment on Vercel
+  "https://bug-tracker-ofdj-git-main-sherly-lance-hs-projects.vercel.app", // Git branch deployment on Vercel
+  "https://bug-tracker-ofdj-sherly-lance-hs-projects.vercel.app"          // Additional Vercel deployment URL
 ];
 
 const corsOptions = {
@@ -39,14 +40,14 @@ app.use(express.json());
 console.log('MongoDB connection bypassed for testing purposes.');
 // Set global flag for bypassed MongoDB connection
 global.bypassMongoDB = true;
-// mongoose.connect(process.env.MONGO_URI)
-//   .then(() => {
-//     console.log('MongoDB Connected Successfully!');
-//   })
-//   .catch((err) => {
-//     console.error('MongoDB connection error:', err);
-//     process.exit(1);
-//   });
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log('MongoDB Connected Successfully!');
+  })
+  .catch((err) => {
+     console.error('MongoDB connection error:', err);
+    process.exit(1);
+ });
 
 // --- Import Routes ---
 const userRoutes = require('./routes/userRoutes');

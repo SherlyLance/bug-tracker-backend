@@ -3,7 +3,9 @@ const router = express.Router(); // Create an Express Router instance
 const {
   createTicket,
   getTicketsByProject,
-  getTicketById
+  getTicketById,
+  updateTicket,
+  deleteTicket
 } = require('../controllers/ticketController'); // Import ticket controller functions
 const { protect } = require('../middleware/authMiddleware'); // Import the authentication middleware
 const Ticket = require('../models/Ticket'); // Import the Ticket model
@@ -43,6 +45,10 @@ router.get('/all', protect, async (req, res) => {
   }
 });
 
-// PUT /api/tickets/:id - Update a ticket (to be implemented)
+// PUT /api/tickets/:id - Update a ticket
+router.put('/:id', protect, updateTicket);
+
+// DELETE /api/tickets/:id - Delete a ticket
+router.delete('/:id', protect, deleteTicket);
 
 module.exports = router; // Export the router

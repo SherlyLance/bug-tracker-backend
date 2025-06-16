@@ -13,8 +13,6 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:3000",                      // Local dev
   "https://bug-tracker-ofdj.vercel.app",        // Production frontend on Vercel
-  "https://bug-tracker-ofdj-git-main-sherly-lance-hs-projects.vercel.app", // Git branch deployment on Vercel
-  "https://bug-tracker-ofdj-sherly-lance-hs-projects.vercel.app"          // Additional Vercel deployment URL
 ];
 
 const corsOptions = {
